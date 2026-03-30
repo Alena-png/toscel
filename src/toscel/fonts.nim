@@ -4,12 +4,12 @@ import pkg/pixie/[fonts]
 
 iterator systemFonts*(): string =
   when defined(windows):
-    for path in walkDirRec("~/.local/share/fonts"):
+    for path in walkDirRec("C:/Windows/Fonts"):
       if path.splitFile.ext == ".ttf":
         yield path
   else:
-    if dirExists("~/.local/share/fonts"):
-      for path in walkDirRec("~/.local/share/fonts"):
+    if dirExists(gethomedir()/".local/share/fonts"):
+      for path in walkDirRec(gethomedir()/".local/share/fonts"):
         if path.splitFile.ext == ".ttf":
           yield path
     for path in walkDirRec("/usr/share/fonts"):
@@ -18,7 +18,7 @@ iterator systemFonts*(): string =
 
 
 
-proc findSystemFont*(query: seq[string] = @["roboto", "ubuntu", "notosans", "arial"]): Typeface =
+proc findSystemFont*(query: seq[string] = @["roboto", "ubuntu", "notosans", "arial", "adwaitasans"]): Typeface =
   for queryEntry in query:
     for path in systemFonts():
       var name = path.splitFile.name.normalize
@@ -34,7 +34,7 @@ var font_default*: Typeface
 
 when not defined(toscel_override_font_default):
   font_default = findSystemFont()
-
+  
   if font_default == nil:
     for path in systemFonts():
       font_default = parseTtf(path.readFile)
