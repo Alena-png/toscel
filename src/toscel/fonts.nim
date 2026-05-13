@@ -17,8 +17,9 @@ iterator systemFonts*(): string =
         yield path
 
 
+const defaultSystemFonts* = @["roboto", "ubuntu", "notosans", "arial", "adwaitasans"]
 
-proc findSystemFont*(query: seq[string] = @["roboto", "ubuntu", "notosans", "arial", "adwaitasans"]): Typeface =
+proc findSystemFont*(query: seq[string] = defaultSystemFonts): Typeface =
   for queryEntry in query:
     for path in systemFonts():
       var name = path.splitFile.name.normalize
