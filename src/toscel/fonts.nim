@@ -17,14 +17,15 @@ iterator systemFonts*(): string =
         yield path
 
 
+const defaultSystemFonts* = @["roboto", "ubuntu", "notosans", "arial"]
 
-proc findSystemFont*(query: seq[string] = @["roboto", "ubuntu", "notosans", "arial"]): Typeface =
+proc findSystemFont*(query: seq[string] = defaultSystemFonts): Typeface =
   for queryEntry in query:
     for path in systemFonts():
       var name = path.splitFile.name.normalize
       name.removeSuffix "-regular"
       if cmpIgnoreStyle(name, queryEntry) == 0:
-        return parseTtf(path.readFile)
+        return readTypeface(path)
   
   return nil
 
@@ -37,6 +38,6 @@ when not defined(toscel_override_font_default):
 
   if font_default == nil:
     for path in systemFonts():
-      font_default = parseTtf(path.readFile)
+      font_default = readTypeface(path)
       break
 
