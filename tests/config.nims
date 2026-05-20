@@ -1,2 +1,2 @@
 switch("path", "$projectDir/../src")
---define:sigui_prefer_x11
+#--define:sigui_prefer_x11
