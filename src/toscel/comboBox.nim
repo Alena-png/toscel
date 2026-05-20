@@ -18,6 +18,7 @@ type
       ## use `disconnect this.binding_valid` and create new binding for `this.valid` or assign a value to it
     
     textEdited*: Event[void]
+    optionSelected*: Event[void]
 
     lineEdit*: LineEdit
 
@@ -63,7 +64,7 @@ method init*(this: ComboBox) =
       binding:
         if root.selectedOption[] in 0..root.options[].high:
           this.text.val = root.options[][root.selectedOption[]]
-          root.textEdited.emit()  # todo: emit only if root.selectedOption[] changed and only if by user
+            # todo: emit only if root.selectedOption[] changed and only if by user
 
       on this.textArea.textEdited:
         let i = root.options[].find(this.text[])
@@ -85,7 +86,7 @@ method init*(this: ComboBox) =
           h = fontSize_default
           this.centerIn(parent)
           
-          image = "arrow-down".icon(fromToscel = true).svg
+          # image = "arrow-down".icon(fromToscel = true).svg
           color = binding:
             if parent.pressed[]: color_fg_pressed
             elif parent.hovered[]: color_fg_active
@@ -104,7 +105,7 @@ method init*(this: ComboBox) =
     --- ClipRect.new:
       <--- ClipRect.new: root.dropdownOpened[]; root.options[]
 
-      drawLayer = after root.parentUiRoot
+      #layer = after root.parentUiRoot
       # todo: global menu/popup layer
       # todo: signalLayer
 
@@ -135,9 +136,11 @@ method init*(this: ComboBox) =
               if root.options[].len != 0:
                 if e.delta > 0:
                   root.selectedOption[] = (root.selectedOption[] + 1).clamp(0, root.options[].high)
+                  root.optionSelected.emit()
                   signal.WindowEvent.handled = true
                 elif e.delta < 0:
                   root.selectedOption[] = (root.selectedOption[] - 1).clamp(0, root.options[].high)
+                  root.optionSelected.emit()
                   signal.WindowEvent.handled = true
           
           if signal of WindowEvent and signal.WindowEvent.event of KeyEvent:
@@ -194,6 +197,7 @@ method init*(this: ComboBox) =
               on this.mouseDownAndUpInside:
                 root.selectedOption[] = optionI
                 root.dropdownOpened[] = false
+                root.optionSelected.emit()
         
         - UiRectBorder.new:
           this.drawLayer = after parent
@@ -213,9 +217,11 @@ method recieve*(this: ComboBox, signal: Signal) =
         if this.options[].len != 0:
           if e.delta > 0:
             this.selectedOption[] = (this.selectedOption[] + 1).euclMod(this.options[].len)
+            this.optionSelected.emit()
             signal.WindowEvent.handled = true
           elif e.delta < 0:
             this.selectedOption[] = (this.selectedOption[] - 1).euclMod(this.options[].len)
+            this.optionSelected.emit()
             signal.WindowEvent.handled = true
       
   if signal of WindowEvent and signal.WindowEvent.event of KeyEvent:
@@ -225,11 +231,13 @@ method recieve*(this: ComboBox, signal: Signal) =
         if e.key == Key.up:
           if this.options[].len != 0:
             this.selectedOption[] = (this.selectedOption[] - 1).euclMod(this.options[].len)
+            this.optionSelected.emit()
             signal.WindowEvent.handled = true
         
         elif e.key == Key.down:
           if this.options[].len != 0:
             this.selectedOption[] = (this.selectedOption[] + 1).euclMod(this.options[].len)
+            this.optionSelected.emit()
             signal.WindowEvent.handled = true
   
   procCall this.super.recieve(signal)
