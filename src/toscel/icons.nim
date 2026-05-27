@@ -15,7 +15,12 @@ const iconsPath* {.strdefine.} = currentSourcePath().parentDir.parentDir / "icon
 
 iterator systemIcons*(): string =
   when defined(windows):
-    return
+    for path in walkDirRec(getHomeDir()/"AppData/Local/Programs/Microsoft VS Code/0958016b2a/resources/app/node_modules/@vscode/codicons/src/icons", {pcFile, pcLinkToFile}):
+      if path.splitFile.ext == ".svg":
+        yield path
+    for path in walkDirRec(getHomeDir()/"AppData/Local/Programs/Microsoft VS Code/974500e64f/resources/app/node_modules/@vscode/codicons/src/icons", {pcFile, pcLinkToFile}):
+      if path.splitFile.ext == ".svg":
+        yield path
   else:
     # if dirExists("~/.local/share/icons/breeze-dark/actions/16/"):
     for path in walkDirRec("~/.local/share/icons/breeze-dark/actions/16/", {pcFile, pcLinkToFile}):
@@ -71,9 +76,8 @@ macro icon*(name: string, fromToscel: static bool = false): Icon =
 
 
 
-when isMainModule:
+when isMainModule or true:
   proc main =
-    echo "document-new".icon.svg
-
+    echo "arrow-down".icon.svg
   main()
 
