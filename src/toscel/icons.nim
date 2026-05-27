@@ -15,12 +15,7 @@ const iconsPath* {.strdefine.} = currentSourcePath().parentDir.parentDir / "icon
 
 iterator systemIcons*(): string =
   when defined(windows):
-    for path in walkDirRec(getHomeDir()/"AppData/Local/Programs/Microsoft VS Code/0958016b2a/resources/app/node_modules/@vscode/codicons/src/icons", {pcFile, pcLinkToFile}):
-      if path.splitFile.ext == ".svg":
-        yield path
-    for path in walkDirRec(getHomeDir()/"AppData/Local/Programs/Microsoft VS Code/974500e64f/resources/app/node_modules/@vscode/codicons/src/icons", {pcFile, pcLinkToFile}):
-      if path.splitFile.ext == ".svg":
-        yield path
+    discard
   else:
     # if dirExists("~/.local/share/icons/breeze-dark/actions/16/"):
     for path in walkDirRec("~/.local/share/icons/breeze-dark/actions/16/", {pcFile, pcLinkToFile}):
