@@ -71,8 +71,8 @@ macro icon*(name: string, fromToscel: static bool = false): Icon =
 
 
 
-when isMainModule or true:
+when isMainModule:
   proc main =
-    echo "arrow-down".icon.svg
+    echo "document-new".icon.svg
   main()
 
